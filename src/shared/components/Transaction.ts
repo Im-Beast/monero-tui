@@ -14,10 +14,19 @@ const pending = crayon.bold.bgHex(colors.backgroundHigher).yellow("(⏱ Pending)
 
 const timeFormatter = new Intl.RelativeTimeFormat(navigator.language);
 function formatTimestamp(moneroTimestamp: number | bigint): string {
-  return timeFormatter.format(
-    Math.round(-(Date.now() - (Number(moneroTimestamp) * 1000)) / (1000 * 60 * 60 * 24)),
-    "days",
-  );
+  const miliseconds = -(Date.now() - (Number(moneroTimestamp) * 1000));
+
+  const seconds = miliseconds / 1000;
+  if (-seconds < 60) return timeFormatter.format(Math.floor(seconds), "seconds");
+
+  const minutes = seconds / 60;
+  if (-minutes < 60) return timeFormatter.format(Math.floor(minutes), "minutes");
+
+  const hours = minutes / 60;
+  if (-hours < 24) return timeFormatter.format(Math.floor(hours), "hours");
+
+  const days = hours / 24;
+  return timeFormatter.format(Math.floor(days), "days");
 }
 
 export const paddedText = new Style({ string: crayon.white, padding: { bottom: 1 } });
