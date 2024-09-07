@@ -10,7 +10,7 @@ export type TransactionInfoBlock = HorizontalBlock;
 
 const sent = crayon.bold.bgHex(colors.backgroundHigher).hex(colors.monero)("↑ Sent ");
 const received = crayon.bold.bgHex(colors.backgroundHigher).green("↓ Received ");
-const pending = crayon.bold.bgHex(colors.backgroundHigher).yellow(" (⏱ Pending)");
+const pending = crayon.bold.bgHex(colors.backgroundHigher).yellow("(⏱ Pending)");
 
 const timeFormatter = new Intl.RelativeTimeFormat(navigator.language);
 function formatTimestamp(moneroTimestamp: number | bigint): string {
@@ -23,7 +23,7 @@ function formatTimestamp(moneroTimestamp: number | bigint): string {
 export const paddedText = new Style({ string: crayon.white, padding: { bottom: 1 } });
 export const paddedBoldText = new Style({ string: crayon.bold.white, padding: { top: 1 } });
 
-const edge = {
+const coloredEdge = {
   padding: { left: 1 },
   border: {
     left: crayon.hex(colors.monero),
@@ -41,13 +41,9 @@ export function Transaction(info: WalletTransactionInfo): TransactionInfoBlock {
     { id: info.hash, width: "100%", y: "50%", string: crayon.bgHex(colors.backgroundHigher) },
     new VerticalBlock(
       { width: "50%" },
-      paddedBoldText.create(text, edge),
-      paddedText.create(formatXMR(info.amount) + " XMR", edge),
+      paddedBoldText.create(text, coloredEdge),
+      paddedText.create(`${formatXMR(info.amount)} XMR`, coloredEdge),
     ),
-    // new VerticalBlock(
-    //     { width: "33%" },
-    //     paddedBoldText.create(info.direction === "in" ? "In" : "To"),
-    // ),
     new VerticalBlock(
       { width: "50%", x: calc("100% - 3") },
       paddedBoldText.create("Date"),
