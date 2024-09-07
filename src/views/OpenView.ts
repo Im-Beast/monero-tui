@@ -1,7 +1,7 @@
 import { VerticalBlock } from "@tui/nice";
 import { computed, signal } from "@tui/signals";
 
-import { Wallet } from "$moneroc/wallet.ts";
+import { Wallet } from "moneroc";
 import { getWalletPath } from "$utils/wallet.ts";
 
 import { boldText } from "../shared/styles.ts";

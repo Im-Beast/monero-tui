@@ -11,9 +11,9 @@
     "@tui/strings": "jsr:@tui/strings@^0",
     "@std/path": "jsr:@std/path@1.0.2",
     "@std/fs": "jsr:@std/fs@1.0.1",
+    "moneroc": "https://raw.githubusercontent.com/MrCyjaneK/monero_c/ts-bindings/impls/monero.ts/mod.ts",
     //
-    "$utils/": "./src/utils/",
-    "$moneroc/": "../moneroc/src/"
+    "$utils/": "./src/utils/"
   },
   "tasks": {
     "run": "deno run --unstable-ffi -A ./src/tui/mod.ts"

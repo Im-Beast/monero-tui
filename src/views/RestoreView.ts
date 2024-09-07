@@ -3,7 +3,7 @@ import { computed, signal } from "@tui/signals";
 import { crayon } from "@crayon/crayon";
 import { createTextBox } from "@tui/tui/components";
 
-import { Wallet } from "$moneroc/wallet.ts";
+import { Wallet } from "moneroc";
 import { getWalletPath } from "$utils/wallet.ts";
 
 import { ActionButton, ErrorText, Spinner, TextBox } from "../shared/components.ts";

@@ -6,8 +6,7 @@ import {
   shallowObservableArray,
 } from "@tui/signals";
 
-import { Wallet } from "$moneroc/wallet.ts";
-import { TransactionHistory } from "$moneroc/transaction_history.ts";
+import { TransactionHistory, Wallet } from "moneroc";
 
 import { PromiseAllObject } from "$utils/promises.ts";
 

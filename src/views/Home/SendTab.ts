@@ -3,7 +3,7 @@ import { crayon } from "@crayon/crayon";
 import { computed, signal } from "@tui/signals";
 import { Suspense } from "@tui/tui/components";
 
-import { Wallet } from "$moneroc/wallet.ts";
+import { Wallet } from "moneroc";
 
 import { colors, separatedText, text } from "../../shared/styles.ts";
 import { Button, CancelButton, Popup, Spinner, TextBox } from "../../shared/components.ts";

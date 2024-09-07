@@ -5,8 +5,7 @@ import { Block, VerticalBlock } from "@tui/nice";
 import { computed, signal } from "@tui/signals";
 import { crayon } from "@crayon/crayon";
 
-import { WalletManager } from "$moneroc/wallet_manager.ts";
-import { Wallet } from "$moneroc/wallet.ts";
+import { Wallet, WalletManager } from "moneroc";
 
 import { getWalletPath } from "$utils/wallet.ts";
 

@@ -2,7 +2,7 @@ import { crayon } from "@crayon/crayon";
 import { HorizontalBlock, VerticalBlock } from "@tui/nice";
 import { computed, getIntermediate } from "@tui/signals";
 
-import { Wallet } from "$moneroc/wallet.ts";
+import { Wallet } from "moneroc";
 import { formatXMR } from "$utils/monero.ts";
 
 import { colors, separatedText, text } from "../../shared/styles.ts";
