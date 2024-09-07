@@ -1,5 +1,6 @@
 import {
   deepObservableArray,
+  getIntermediate,
   ObservableArray,
   ObservableObject,
   observableObject,
@@ -41,6 +42,7 @@ export interface WalletAccountInfo {
   label: string;
   address: string;
   balance: bigint;
+  unlockedBalance: bigint;
 
   addresses: WalletAddressInfo[];
 }
@@ -56,7 +58,6 @@ export type ObservableWalletCache = ObservableObject<{
   targetBlockChainHeight: bigint;
   daemonblockChainHeight: bigint;
 
-  allTransactions: number;
   transactions: ObservableArray<ObservableArray<WalletTransactionInfo[]>[]>;
 
   accounts: ObservableArray<WalletAccountInfo[]>;
@@ -74,9 +75,8 @@ export class WalletCache {
     blockChainHeight: 1n,
     targetBlockChainHeight: 1n,
     daemonblockChainHeight: 1n,
-    allTransactions: 0,
     transactions: deepObservableArray([]),
-    accounts: shallowObservableArray([]),
+    accounts: deepObservableArray([]),
   });
 
   constructor(wallet: Wallet) {
@@ -94,21 +94,25 @@ export class WalletCache {
   async cacheAccounts(): Promise<void> {
     const { wallet, cache } = this;
 
-    {
-      const accountsLen = await wallet.numSubaddressAccounts();
-      if (cache.accounts.length < accountsLen) {
-        for (let i = cache.accounts.length; i < accountsLen; ++i) {
-          // TODO: PromiseAll
-          const account: WalletAccountInfo = {
-            id: i,
-            address: await wallet.address(BigInt(i)),
-            balance: await wallet.balance(i),
-            label: await wallet.getSubaddressLabel(i, 0),
-            addresses: [],
-          };
+    const accountsLen = await wallet.numSubaddressAccounts();
+    for (let i = 0; i < accountsLen; ++i) {
+      const currentAccount = cache.accounts[i];
 
-          cache.accounts.push(account);
-        }
+      const account: WalletAccountInfo = await PromiseAllObject({
+        id: i,
+        address: wallet.address(BigInt(i)),
+        balance: wallet.balance(i).then(BigInt),
+        unlockedBalance: wallet.unlockedBalance(i).then(BigInt),
+        label: wallet.getSubaddressLabel(i, 0),
+        addresses: currentAccount?.addresses ?? deepObservableArray([]),
+      });
+
+      // Only update the account if it actually change to not necessarily propagate changes to signal
+      if (
+        currentAccount?.balance !== account.balance ||
+        currentAccount.label !== account.label
+      ) {
+        cache.accounts.splice(i, 1, account);
       }
     }
 
@@ -116,15 +120,16 @@ export class WalletCache {
       const { addresses } = cache.accounts[i]!;
       const adressesLen = await wallet.numSubaddresses(i);
 
-      if (addresses.length < adressesLen) {
-        for (let j = addresses.length; j < adressesLen; ++j) {
-          const address: WalletAddressInfo = {
-            id: j,
-            address: await wallet.address(BigInt(i), BigInt(j)),
-            label: await wallet.getSubaddressLabel(i, j),
-          };
+      for (let j = 0; j < adressesLen; ++j) {
+        const currentAddress = addresses[j];
+        const address: WalletAddressInfo = await PromiseAllObject({
+          id: j,
+          address: wallet.address(BigInt(i), BigInt(j)),
+          label: wallet.getSubaddressLabel(i, j),
+        });
 
-          addresses.push(address);
+        if (currentAddress?.label !== address.label) {
+          addresses[j] = address;
         }
       }
     }
@@ -139,10 +144,12 @@ export class WalletCache {
       this.#transactionHistory = history;
       await wallet.throwIfError();
     }
+    await history.refresh();
 
     const transactionsLen = await history.count();
 
-    for (let i = cache.allTransactions; i < transactionsLen; ++i) {
+    const toBeSorted = new Set<WalletTransactionInfo[]>();
+    for (let i = 0; i < transactionsLen; ++i) {
       const transaction = await history.transaction(i);
 
       const transactionInfo = await PromiseAllObject({
@@ -165,13 +172,26 @@ export class WalletCache {
         isCoinbase: transaction.isCoinbase(),
       });
 
-      const transactions = cache.transactions[transactionInfo.account] ??= shallowObservableArray([]);
-
-      transactions.push(transactionInfo);
-      transactions.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
+      const transactions = cache.transactions[transactionInfo.account] ??= deepObservableArray([]);
+      const index = transactions.findIndex(({ hash }) => hash === transactionInfo.hash);
+      if (index !== -1) {
+        const currentTransaction = transactions[index]!;
+        if (
+          currentTransaction.label !== transactionInfo.label ||
+          currentTransaction.description !== transactionInfo.description ||
+          currentTransaction.confirmations !== transactionInfo.confirmations
+        ) {
+          transactions.splice(index, 1, transactionInfo);
+        }
+      } else {
+        transactions.push(transactionInfo);
+        toBeSorted.add(transactions);
+      }
     }
 
-    cache.allTransactions = transactionsLen;
+    for (const transactions of toBeSorted) {
+      transactions.sort((a, b) => a.timestamp < b.timestamp ? 1 : -1);
+    }
   }
 
   cacheInBackground(): () => void {
@@ -185,7 +205,7 @@ export class WalletCache {
     const run = async () => {
       Object.assign(
         cache,
-        await PromiseAllObject<Partial<ObservableWalletCache>>({
+        await PromiseAllObject({
           // Explicit conversion because of https://github.com/denoland/deno/issues/25194
           balance: wallet.balance(cache.currentAccount).then(BigInt),
           unlockedBalance: wallet.unlockedBalance(cache.currentAccount).then(BigInt),
@@ -196,21 +216,25 @@ export class WalletCache {
         }),
       );
 
-      await Promise.all([this.cacheAccounts(), this.cacheTransactions()]);
+      if (i % 10 === 0) { // Every 1 second
+        await this.cacheAccounts();
+      }
+
+      if (i % 50 === 0) { // Every 5 seconds
+        await this.cacheTransactions();
+      }
 
       if (i > 15 * 10 * 60) { // every 15 min
         await wallet.store();
         i = 0;
       }
 
-      i += 1;
       if (!exit) {
+        i += 1;
         timeout = setTimeout(run, 100);
       }
     };
 
-    this.cacheAccounts();
-    this.cacheTransactions();
     run();
 
     return (async () => {

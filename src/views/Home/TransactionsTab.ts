@@ -8,7 +8,6 @@ import { ScrollView, Transaction } from "../../shared/components.ts";
 
 export function TransactionsTab(cache: ObservableWalletCache) {
   const transactions = computed(() => {
-    cache.allTransactions;
     return cache.transactions[cache.currentAccount];
   });
 

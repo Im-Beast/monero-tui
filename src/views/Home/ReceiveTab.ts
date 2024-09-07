@@ -9,8 +9,8 @@ import { boldText, colors, separatedText, text } from "../../shared/styles.ts";
 import { ObservableWalletCache } from "$utils/wallet_cache.ts";
 
 export function ReceiveTab(wallet: Wallet, cache: ObservableWalletCache) {
-  const account = computed(() => cache.accounts[cache.currentAccount]!);
-  const addresses = computed(() => account.get().addresses);
+  const account = computed(() => cache.accounts[cache.currentAccount]);
+  const addresses = computed(() => account.get()?.addresses);
 
   return new VerticalBlock(
     { id: "receive-tab", width: "95%", height: "100%", gap: 1 },
@@ -19,13 +19,20 @@ export function ReceiveTab(wallet: Wallet, cache: ObservableWalletCache) {
       { width: "100%", x: "50%" },
       text.create(computed(() => `Address #${cache.currentAccount}`)),
       // TODO: Wrap/ellipse address
-      boldText.create(computed(() => account.get().label)),
-      text.create(computed(() => account.get().address)),
+      boldText.create(computed(() => account.get()?.label ?? "")),
+      text.create(computed(() => account.get()?.address ?? ""), {
+        width: (w) => w,
+        text: {
+          horizontalAlign: "center",
+          overflow: "ellipsis",
+          wrap: "nowrap",
+        },
+      }),
     ),
     new VerticalBlock(
       { width: "100%" },
       separatedText.create(
-        computed(() => `Addresses (${addresses.get().length})`),
+        computed(() => `Addresses (${addresses.get()?.length ?? 0})`),
       ),
       SmallButton("[Create new address]", {
         async onClick() {
@@ -78,13 +85,11 @@ export function ReceiveTab(wallet: Wallet, cache: ObservableWalletCache) {
         },
       }),
     ),
-    computed(() => {
-      const addrs = addresses.get();
-
-      if (addrs.length) {
+    computed([addresses], (addresses) => {
+      if (addresses?.length) {
         return ScrollView(
           { id: "addresses", width: "100%", height: (h) => h - 14, gap: 1 },
-          ...addrs.map((addressInfo) => Address(addressInfo)),
+          ...addresses.map((addressInfo) => Address(addressInfo)),
         );
       }
 

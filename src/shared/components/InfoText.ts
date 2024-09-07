@@ -6,7 +6,7 @@ import { colors } from "../styles.ts";
 const info = new Style({
   string: crayon.hex(colors.info).bgHex(colors.background),
   border: { all: crayon.hex(colors.info).bgHex(colors.background), type: "sharp" },
-  margin: { top: 2 },
+  text: { horizontalAlign: "center", verticalAlign: "middle" },
   skipIfTooSmall: true,
 });
 
@@ -17,7 +17,7 @@ export function InfoText(text: string) {
 const warning = new Style({
   string: crayon.hex(colors.warning).bgHex(colors.background),
   border: { all: crayon.hex(colors.warning).bgHex(colors.background), type: "sharp" },
-  margin: { top: 2 },
+  text: { horizontalAlign: "center", verticalAlign: "middle" },
   skipIfTooSmall: true,
 });
 
@@ -28,7 +28,7 @@ export function WarningText(text: string) {
 const error = new Style({
   string: crayon.hex(colors.error).bgHex(colors.background),
   border: { all: crayon.hex(colors.error).bgHex(colors.background), type: "sharp" },
-  margin: { top: 2 },
+  text: { horizontalAlign: "center", verticalAlign: "middle" },
   skipIfTooSmall: true,
 });
 

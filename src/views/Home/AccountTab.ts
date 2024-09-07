@@ -19,12 +19,24 @@ export function AccountTab(wallet: Wallet, cache: ObservableWalletCache) {
         { gap: 7 },
         // FIXME: Total balance = sum(accounts.balance)
         text.create("Total balance:", { width: 25 }),
-        text.create(computed(() => `${formatXMR(cache.balance)} XMR`)),
+        text.create(computed(() => {
+          let balance = 0n;
+          for (const account of cache.accounts) {
+            balance += account.balance;
+          }
+          return `${formatXMR(balance)} XMR`;
+        })),
       ),
       new HorizontalBlock(
         { gap: 7 },
         text.create("Total unlocked balance:", { width: 25 }),
-        text.create(computed(() => `${formatXMR(cache.unlockedBalance)} XMR`)),
+        text.create(computed(() => {
+          let balance = 0n;
+          for (const account of cache.accounts) {
+            balance += account.unlockedBalance;
+          }
+          return `${formatXMR(balance)} XMR`;
+        })),
       ),
     ),
     new VerticalBlock(
