@@ -32,10 +32,7 @@ export function Open() {
   return new VerticalBlock(
     { id: "open-view", width: "100%", height: "100%", x: "50%", y: "50%", gap: 1 },
     boldText.create("Log in to your wallet"),
-    computed(() => {
-      const isLoading = loading.get();
-      const errorMessage = error.get();
-
+    computed([loading, error], (isLoading, errorMessage) => {
       if (errorMessage) {
         setTimeout(() => {
           error.set("");
@@ -49,7 +46,7 @@ export function Open() {
       }
 
       return new VerticalBlock(
-        { width: (w) => Math.min(w, 40), x: "50%", y: "50%", gap: 1 },
+        { id: "password-box", width: (w) => Math.min(w, 40), x: "50%", y: "50%", gap: 1 },
         PasswordTextBox("Password", {
           password: true,
           onChange: (value) => (password = value),
