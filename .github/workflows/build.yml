@@ -41,7 +41,7 @@ jobs:
               run: |
                 which 7z
                 7z a -tzip monero-tui-${{ matrix.triplets[1] }}.zip -w bin/. lib
-            - uses: actions/upload-artifact@v3
+            - uses: actions/upload-artifact@v4
               with:
                 name: monero-tui-${{ matrix.triplets[1] }}
                 path: monero-tui-${{ matrix.triplets[1] }}.zip
