@@ -26,10 +26,9 @@ export const walletCache = computed([wallet], (wallet) => {
 });
 
 export type View = "create" | "introduction" | "open" | "restore" | "home" | (() => Block);
-export const view = signal<View>("introduction");
-
-const walletExists = await exists(await getWalletPath());
-if (walletExists) view.set("open");
+export const view = signal<View>(
+  await exists(await getWalletPath()) ? "open" : "introduction",
+);
 
 tui.render(
   () =>
