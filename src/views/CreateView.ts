@@ -77,7 +77,11 @@ export function Create() {
                 wallet.set(createdWallet);
                 view.set("home");
               } catch (err) {
-                error.set(err.message);
+                if (err instanceof Error) {
+                  error.set(err.message);
+                } else {
+                  error.set(String(err));
+                }
               }
             },
           }),

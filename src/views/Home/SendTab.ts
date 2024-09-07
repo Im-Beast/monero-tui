@@ -138,7 +138,11 @@ export function SendTab(wallet: Wallet, cache: ObservableWalletCache) {
             );
           });
         } catch (err) {
-          if (err) error.set(err.message);
+          if (err instanceof Error) {
+            error.set(err.message);
+          } else {
+            error.set(String(err));
+          }
         }
       },
     }),
