@@ -1,0 +1,47 @@
+# Based on monero_c full_check workflow
+# https://github.com/MrCyjaneK/monero_c/blob/master/.github/workflows/full_check.yaml
+name: dev-build
+on: [push]
+jobs:
+    compile:
+        strategy:
+          fail-fast: true
+          matrix:
+            triplets: [
+              # MoneroC | Deno
+              [x86_64-linux-gnu, x86_64-unknown-linux-gnu],
+              [aarch64-linux-gnu, aarch64-unknown-linux-gnu],
+              [x86_64-apple-darwin11, x86_64-apple-darwin],
+              [aarch64-apple-darwin11, aarch64-apple-darwin],
+              [x86_64-w64-mingw32, x86_64-pc-windows-msvc]
+            ]
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+                submodules: recursive
+            - uses: denoland/setup-deno@v1
+              with:
+                deno-version: v1.x
+
+            - name: Install dependencies
+              run: |
+                sudo apt update
+                sudo apt install -y build-essential pkg-config autoconf libtool ccache make cmake gcc g++ git curl lbzip2 libtinfo5 gperf unzip python-is-python3 p7zip-full
+            - name: Build monero_c
+              run: |
+                source .env
+                mkdir -p lib
+                ./build_moneroc.sh --prebuild --coin ${COIN} --tag ${MONERO_C_TAG} --triplet ${{ matrix.triplets[0] }} --location ./lib
+            - name: Deno compile
+              run: |
+                deno compile --unstable-ffi -A --target ${{ matrix.triplets[1] }} --output ./bin/monero-tui-${{ matrix.triplets[1] }} ./src/mod.ts
+            - name: Zip binary with lib
+              run: |
+                which 7z
+                7z a -tzip monero-tui-${{ matrix.triplets[1] }}.zip -w bin/. lib
+            - uses: actions/upload-artifact@v3
+              with:
+                name: monero-tui-${{ matrix.triplets[1] }}
+                path: monero-tui-${{ matrix.triplets[1] }}.zip
