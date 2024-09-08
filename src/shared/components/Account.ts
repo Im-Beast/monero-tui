@@ -20,6 +20,10 @@ const AccountButton = createButton((() => {
       left: crayon.hex(colors.monero),
       type: "thick",
     },
+    text: {
+      overflow: "ellipsis",
+      wrap: "nowrap",
+    },
     skipIfTooSmall: true,
   });
   const hover = base.derive({
@@ -46,15 +50,37 @@ export function Account(
 ): AccountBlock {
   const obscuredAddress = address.slice(0, 3) + " ... " + address.slice(-4);
 
+  // TODO: Button that can hold custom block instead of just text
+  //       What is done now is basically a temporary hack
   const block = computed([width], (width) => {
-    const blockWidth = Math.floor(width / 3);
-    // TODO: Button that can hold custom block instead of just text
-    //       What is done now is basically a temporary hack
-    const start = cropStart(`#${id} ${label}`, blockWidth).padEnd(blockWidth, " ");
-    const middle = cropStart(obscuredAddress, blockWidth).padEnd(blockWidth, " ");
-    const end = cropStart(`${formatXMR(balance)} XMR`, blockWidth).padStart(blockWidth, " ");
+    let string = "";
+    let compact = 0;
+    let blockWidth = Math.floor(width / 3);
+    if (blockWidth < 15) {
+      compact = 2;
+      blockWidth = width;
+    } else if (blockWidth < 25) {
+      compact = 1;
+      blockWidth = Math.floor(width / 2);
+    }
 
-    return AccountButton(`${start}${middle}${end}`, {
+    string += cropStart(`#${id} ${label}`, blockWidth)
+      .padEnd(Math.min(width, blockWidth), " ");
+
+    if (!compact) {
+      const center = cropStart(obscuredAddress, blockWidth);
+      if (center.length < blockWidth) {
+        const diff = blockWidth - center.length;
+        string += " ".repeat(Math.floor(diff / 2)) + center + " ".repeat(Math.ceil(diff / 2));
+      }
+    }
+
+    if (compact < 2) {
+      string += cropStart(`${formatXMR(balance)} XMR`, blockWidth)
+        .padStart(blockWidth, " ");
+    }
+
+    return AccountButton(string, {
       forceClass: () => cache.currentAccount === id ? "active" : undefined,
       onClick() {
         cache.currentAccount = id;
