@@ -1,19 +1,22 @@
-# Based on monero_c full_check workflow
-# https://github.com/MrCyjaneK/monero_c/blob/master/.github/workflows/full_check.yaml
-name: dev-build
-on: [push]
+name: release-build
+on:
+  push:
+    tags:
+      - '*'
 jobs:
-    compile:
+    release:
         strategy:
           fail-fast: true
           matrix:
             triplets: [
               # MoneroC | Deno
+              # TODO: Demo supports linux for now, macOS debug builds should work though
+              #       Windows on the other hand is unsupported for now
               [x86_64-linux-gnu, x86_64-unknown-linux-gnu],
-              [aarch64-linux-gnu, aarch64-unknown-linux-gnu],
-              [x86_64-apple-darwin11, x86_64-apple-darwin],
-              [aarch64-apple-darwin11, aarch64-apple-darwin],
-              [x86_64-w64-mingw32, x86_64-pc-windows-msvc]
+              # [aarch64-linux-gnu, aarch64-unknown-linux-gnu],
+              # [x86_64-apple-darwin11, x86_64-apple-darwin],
+              # [aarch64-apple-darwin11, aarch64-apple-darwin],
+              # [x86_64-w64-mingw32, x86_64-pc-windows-msvc]
             ]
         runs-on: ubuntu-latest
         steps:
@@ -24,7 +27,10 @@ jobs:
             - uses: denoland/setup-deno@v1
               with:
                 deno-version: v1.x
-
+            - name: Setup git credentials
+              run: |
+                git config --global user.email "franik.mateusz@gmail.com"
+                git config --global user.name "Im-Beast"
             - name: Install dependencies
               run: |
                 sudo apt update
@@ -33,7 +39,7 @@ jobs:
               run: |
                 source .env
                 mkdir -p lib
-                ./build_moneroc.sh --prebuild --coin ${COIN} --tag ${MONERO_C_TAG} --triplet ${{ matrix.triplets[0] }} --location ./lib
+                ./build_moneroc.sh --coin ${COIN} --tag ${MONERO_C_TAG} --triplet ${{ matrix.triplets[0] }} --location ./lib
             - name: Deno compile
               run: |
                 deno compile --unstable-ffi -A --target ${{ matrix.triplets[1] }} --output ./bin/monero-tui-${{ matrix.triplets[1] }} ./src/mod.ts
@@ -45,3 +51,8 @@ jobs:
               with:
                 name: monero-tui-${{ matrix.triplets[1] }}
                 path: monero-tui-${{ matrix.triplets[1] }}.zip
+            - name: Create release ${{ github.event.release.tag_name }}
+              uses: softprops/action-gh-release@v2
+              with:
+                files: |
+                  monero-tui-${{ matrix.triplets[1] }}.zip
