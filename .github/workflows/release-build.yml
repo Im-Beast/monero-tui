@@ -1,4 +1,6 @@
 name: release-build
+permissions:
+  contents: write
 on:
   push:
     tags:
