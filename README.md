@@ -1,8 +1,8 @@
 # Monero TUI
 
 > [!IMPORTANT]
-> Monero TUI is still not stable and its not recommended to use it for important transactions.
-> Consider it as being in alpha phase. Currently only Linux is supported on release builds.
+> Monero TUI is still not stable and its not recommended to use it for important transactions.\
+> Consider it as being in alpha phase. Currently only Linux is supported on release builds.\
 > However debug builds of macOS should work fine (except the fact that they're not signed).
 
 
