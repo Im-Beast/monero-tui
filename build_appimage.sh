@@ -11,7 +11,7 @@ mkdir -p ./usr/bin
 mkdir -p ./usr/lib
 popd
 
-cp ../bin/$BIN_NAME ./monero-tui.AppDir/usr/bin/monero_tui
+cp ../bin/$BIN_NAME ./monero-tui.AppDir/usr/bin/monero-tui
 cp ../lib/* ./monero-tui.AppDir/usr/lib/
 
 ./appimagetool.AppImage -n ./monero-tui.AppDir ../bin/$BIN_NAME.AppImage
