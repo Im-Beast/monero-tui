@@ -15,7 +15,7 @@ jobs:
               [aarch64-apple-darwin11, aarch64-apple-darwin],
               [x86_64-w64-mingw32, x86_64-pc-windows-msvc]
             ]
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         steps:
             - uses: actions/checkout@v4
               with:
