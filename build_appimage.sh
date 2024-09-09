@@ -6,5 +6,5 @@ chmod +x appimagetool-x86_64.AppImage
 cp -r ../bin/ ./monero-tui.AppDir/usr/
 cp -r ../lib/ ./monero-tui.AppDir/usr/
 
-ARCH=x86_64 ./appimagetool-x86_64.AppImage -n ./monero-tui.AppDir ../bin/monero-tui.AppImage
+ARCH=x86_64 ./appimagetool-x86_64.AppImage -n ./monero-tui.AppDir ../bin/monero-tui-x86_64-unknown-linux-gnu.AppImage
 popd
