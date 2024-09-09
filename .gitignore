@@ -1,3 +1,9 @@
 lib/
 bin/
 artifacts/
+
+# AppImage template
+appimage/appimagetool.AppImage
+appimage/monero-tui.AppDir/usr/bin/*
+appimage/monero-tui.AppDir/usr/lib/*
+appimage/monero-tui.AppDir/.DirIcon
