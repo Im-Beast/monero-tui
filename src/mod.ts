@@ -5,7 +5,7 @@ import { Block, VerticalBlock } from "@tui/nice";
 import { computed, signal } from "@tui/signals";
 import { crayon } from "@crayon/crayon";
 
-import { Wallet, WalletManager } from "moneroc";
+import { loadDylib, Wallet, WalletManager } from "moneroc";
 
 import { getWalletPath } from "$utils/wallet.ts";
 
@@ -17,6 +17,8 @@ import { Home } from "./views/HomeView.ts";
 
 import { colors } from "./shared/styles.ts";
 import { WalletCache } from "$utils/wallet_cache.ts";
+
+loadDylib();
 
 export const walletManager = await WalletManager.new();
 export const wallet = signal<Wallet | undefined>(undefined);
