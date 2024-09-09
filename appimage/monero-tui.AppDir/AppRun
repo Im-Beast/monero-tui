@@ -1,0 +1,4 @@
+#!/bin/bash
+current_dir="$(dirname "$(readlink -f "${0}")")"
+cd $current_dir/usr
+"$current_dir/usr/bin/monero-tui" "$@"

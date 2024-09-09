@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Monero TUI
+GenericName=Monero-TUI
+Comment=Monero TUI wallet
+Type=Application
+StartupNotify=true
+Terminal=true
+Exec=monero-tui
+Icon=monero-tui
+Categories=Network;Finance;Office;
