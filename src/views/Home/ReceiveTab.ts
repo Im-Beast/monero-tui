@@ -50,7 +50,7 @@ export function ReceiveTab(wallet: Wallet, cache: ObservableWalletCache) {
               new VerticalBlock(
                 { width: "50%" },
                 separatedText.create("Set the label of a new address"),
-                TextBox("Account name", {
+                TextBox("Address label", {
                   onChange(value) {
                     addressLabel = value;
                   },

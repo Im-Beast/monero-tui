@@ -4,7 +4,6 @@ import {
   ObservableArray,
   ObservableObject,
   observableObject,
-  shallowObservableArray,
 } from "@tui/signals";
 
 import { TransactionHistory, Wallet } from "moneroc";
@@ -94,6 +93,8 @@ export class WalletCache {
   async cacheAccounts(): Promise<void> {
     const { wallet, cache } = this;
 
+    let changed = false;
+
     const accountsLen = await wallet.numSubaddressAccounts();
     for (let i = 0; i < accountsLen; ++i) {
       const currentAccount = cache.accounts[i];
@@ -113,6 +114,7 @@ export class WalletCache {
         currentAccount.label !== account.label
       ) {
         cache.accounts.splice(i, 1, account);
+        changed = true;
       }
     }
 
@@ -130,8 +132,13 @@ export class WalletCache {
 
         if (currentAddress?.label !== address.label) {
           addresses[j] = address;
+          changed = true;
         }
       }
+    }
+
+    if (changed) {
+      getIntermediate(cache.accounts).updateDependants();
     }
   }
 
