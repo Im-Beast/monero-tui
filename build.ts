@@ -77,7 +77,7 @@ for (const [arch, moneroc_target, deno_target] of triplets) {
             -v "$PWD":/work                         \
             -w /work                                \
             "${image}"                              \
-            apk add bash && ARCH=${arch} BIN_NAME=${binaryName} ./build_appimage.sh`;
+            apk add bash curl jq && ARCH=${arch} BIN_NAME=${binaryName} ./build_appimage.sh`;
         }
     }
 
