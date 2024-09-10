@@ -4,67 +4,67 @@ permissions:
 on:
   push:
     tags:
-      - '*'
+      - "*"
 jobs:
-    release:
-        strategy:
-          fail-fast: true
-          matrix:
-            triplets: [
-              # MoneroC | Deno | AppImage
-              # TODO: Demo supports linux for now, macOS debug builds should work though
-              #       Windows on the other hand is unsupported for now
-              [x86_64-linux-gnu, x86_64-unknown-linux-gnu, x86_64],
-              # [aarch64-linux-gnu, aarch64-unknown-linux-gnu],
-              # [x86_64-apple-darwin11, x86_64-apple-darwin],
-              # [aarch64-apple-darwin11, aarch64-apple-darwin],
-              # [x86_64-w64-mingw32, x86_64-pc-windows-msvc]
-            ]
-        runs-on: ubuntu-20.04
-        steps:
-            - uses: actions/checkout@v4
-              with:
-                fetch-depth: 0
-                submodules: recursive
-            - uses: denoland/setup-deno@v1
-              with:
-                deno-version: v1.x
-            - name: Setup git credentials
-              run: |
-                git config --global user.email "franik.mateusz@gmail.com"
-                git config --global user.name "Im-Beast"
-            - name: Install dependencies
-              run: |
-                sudo apt update
-                sudo apt install -y build-essential pkg-config autoconf libtool ccache make cmake gcc g++ git curl lbzip2 libtinfo5 gperf unzip python-is-python3 p7zip-full fuse libfuse2 desktop-file-utils
-            - name: Build monero_c
-              run: |
-                source .env
-                mkdir -p lib
-                ./build_moneroc.sh --coin ${COIN} --tag ${MONERO_C_TAG} --triplet ${{ matrix.triplets[0] }} --location ./lib
-            - name: Deno compile
-              run: |
-                deno compile --unstable-ffi -A --target ${{ matrix.triplets[1] }} --output ./bin/monero-tui-${{ matrix.triplets[1] }} ./src/mod.ts
-            - name: Zip binary with lib
-              run: |
-                which 7z
-                7z a -tzip ./bin/monero-tui-${{ matrix.triplets[1] }}.zip -w bin/. lib
-            - uses: actions/upload-artifact@v4
-              with:
-                name: monero-tui-${{ matrix.triplets[1] }}
-                path: ./bin/monero-tui-${{ matrix.triplets[1] }}.zip
-            - name: Build AppImage
-              run: |
-                export ARCH=${{ matrix.triplets[2] }}
-                export BIN_NAME=monero-tui-${{ matrix.triplets[1] }}
-                ./build_appimage.sh
-            - uses: actions/upload-artifact@v4
-              with:
-                name: monero-tui-${{ matrix.triplets[1] }}.AppImage
-                path: ./bin/monero-tui-${{ matrix.triplets[1] }}.AppImage
-            - name: Create release ${{ github.event.release.tag_name }}
-              uses: softprops/action-gh-release@v2
-              with:
-                files: |
-                  ./bin/monero-tui-${{ matrix.triplets[1] }}.zip
-                  ./bin/monero-tui-${{ matrix.triplets[1] }}.AppImage
+  release:
+    strategy:
+      fail-fast: true
+      matrix:
+        triplets: [
+            # MoneroC | Deno | AppImage
+            # TODO: Demo supports linux for now, macOS debug builds should work though
+            #       Windows on the other hand is unsupported for now
+            [x86_64-linux-gnu, x86_64-unknown-linux-gnu, x86_64],
+            # [aarch64-linux-gnu, aarch64-unknown-linux-gnu],
+            # [x86_64-apple-darwin11, x86_64-apple-darwin],
+            # [aarch64-apple-darwin11, aarch64-apple-darwin],
+            # [x86_64-w64-mingw32, x86_64-pc-windows-msvc]
+          ]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - name: Setup git credentials
+        run: |
+          git config --global user.email "franik.mateusz@gmail.com"
+          git config --global user.name "Im-Beast"
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential pkg-config autoconf libtool ccache make cmake gcc g++ git curl lbzip2 libtinfo5 gperf unzip python-is-python3 p7zip-full fuse libfuse2 desktop-file-utils
+      - name: Build monero_c
+        run: |
+          source .env
+          mkdir -p lib
+          ./build_moneroc.sh --coin ${COIN} --tag ${MONERO_C_TAG} --triplet ${{ matrix.triplets[0] }} --location ./lib
+      - name: Deno compile
+        run: |
+          deno compile --unstable-ffi -A --target ${{ matrix.triplets[1] }} --output ./bin/monero-tui-${{ matrix.triplets[1] }} ./src/mod.ts
+      - name: Zip binary with lib
+        run: |
+          which 7z
+          7z a -tzip ./bin/monero-tui-${{ matrix.triplets[1] }}.zip -w bin/. lib
+      - uses: actions/upload-artifact@v4
+        with:
+          name: monero-tui-${{ matrix.triplets[1] }}
+          path: ./bin/monero-tui-${{ matrix.triplets[1] }}.zip
+      - name: Build AppImage
+        run: |
+          export ARCH=${{ matrix.triplets[2] }}
+          export BIN_NAME=monero-tui-${{ matrix.triplets[1] }}
+          ./build_appimage.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: monero-tui-${{ matrix.triplets[1] }}.AppImage
+          path: ./bin/monero-tui-${{ matrix.triplets[1] }}.AppImage
+      - name: Create release ${{ github.event.release.tag_name }}
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ./bin/monero-tui-${{ matrix.triplets[1] }}.zip
+            ./bin/monero-tui-${{ matrix.triplets[1] }}.AppImage
