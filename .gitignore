@@ -1,5 +1,6 @@
 lib/
 bin/
+build/
 artifacts/
 
 # AppImage template
