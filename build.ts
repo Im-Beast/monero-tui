@@ -58,8 +58,7 @@ for (const [arch, moneroc_target, deno_target] of triplets) {
                     break;
             }
 
-            // libassuan-static is supported only from 3.19 onwards
-            const image = `${image_prefix}/alpine:3.19`;
+            const image = `${image_prefix}/ubuntu:20.04`;
 
             // run the build with the current user to
             //   a) make sure root is not required for builds
@@ -77,7 +76,9 @@ for (const [arch, moneroc_target, deno_target] of triplets) {
             -v "$PWD":/work                         \
             -w /work                                \
             "${image}"                              \
-            apk add bash curl jq && ARCH=${arch} BIN_NAME=${binaryName} ./build_appimage.sh`;
+            sudo apt update                         \
+            && sudo apt install -y tree build-essential pkg-config autoconf libtool ccache make cmake gcc g++ git curl lbzip2 libtinfo5 gperf unzip python-is-python3 p7zip-full fuse libfuse2 desktop-file-utils \
+            && ARCH=${arch} BIN_NAME=${binaryName} ./build_appimage.sh`;
         }
     }
 

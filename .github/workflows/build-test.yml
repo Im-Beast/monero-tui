@@ -17,8 +17,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y build-essential pkg-config autoconf libtool ccache make cmake gcc g++ git curl lbzip2 libtinfo5 gperf unzip python-is-python3 p7zip-full qemu qemu-user-static
-      - name: Lol
+          sudo apt install -y tree build-essential pkg-config autoconf libtool ccache make cmake gcc g++ git curl lbzip2 libtinfo5 gperf unzip python-is-python3 p7zip-full fuse libfuse2 desktop-file-utils qemu qemu-user-static
+      - name: Build
         run: |
-          docker buildx ls
           DEBUG=true deno run --env-file -A build.ts
