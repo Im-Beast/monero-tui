@@ -11,6 +11,7 @@ mkdir -p ./usr/bin
 mkdir -p ./usr/lib
 popd
 
+tree
 cp ../bin/$BIN_NAME ./monero-tui.AppDir/usr/bin/monero-tui
 cp ../lib/* ./monero-tui.AppDir/usr/lib/
 

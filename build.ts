@@ -71,14 +71,13 @@ for (const [arch, moneroc_target, deno_target] of triplets) {
             --rm                                    \
             --platform "${platform}"                \
             -i                                      \
-            -e ARCH=${arch}                         \
             -e GITHUB_ACTIONS                       \
             -e GITHUB_RUN_NUMBER                    \
             -e OUT_UID="${uid}"                     \
             -v "$PWD":/work                         \
             -w /work                                \
             "${image}"                              \
-            apk add bash && bash build_appimage.sh`;
+            apk add bash && ARCH=${arch} BIN_NAME=${binaryName} ./build_appimage.sh`;
         }
     }
 
