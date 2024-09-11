@@ -70,6 +70,7 @@ for (const [arch, moneroc_target, deno_target] of triplets) {
             --rm                                    \
             --platform "${platform}"                \
             -i                                      \
+            -u root                                 \
             -e GITHUB_ACTIONS                       \
             -e GITHUB_RUN_NUMBER                    \
             -e OUT_UID="${uid}"                     \
