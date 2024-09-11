@@ -70,14 +70,14 @@ for (const [arch, moneroc_target, deno_target] of triplets) {
             --rm                                    \
             --platform "${platform}"                \
             -i                                      \
-            -u root                                 \
+            -u 0                                    \
             -e GITHUB_ACTIONS                       \
             -e GITHUB_RUN_NUMBER                    \
             -e OUT_UID="${uid}"                     \
             -v "$PWD":/work                         \
             -w /work                                \
             "${image}"                              \
-            apt update                         \
+            apt update                              \
             && apt install -y tree build-essential pkg-config autoconf libtool ccache make cmake gcc g++ git curl lbzip2 libtinfo5 gperf unzip python-is-python3 p7zip-full fuse libfuse2 desktop-file-utils \
             && ARCH=${arch} BIN_NAME=${binaryName} ./build_appimage.sh`;
         }
