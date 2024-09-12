@@ -1,9 +1,7 @@
-name: build test
+name: Debug builds
 on: [push]
 jobs:
   build-test:
-    strategy:
-      fail-fast: true
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
@@ -17,7 +15,37 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y tree build-essential pkg-config autoconf libtool ccache make cmake gcc g++ git curl lbzip2 libtinfo5 gperf unzip python-is-python3 p7zip-full fuse libfuse2 desktop-file-utils qemu qemu-user-static
+          sudo apt install -y tree p7zip-full
+
       - name: Build
-        run: |
-          DEBUG=true deno run --env-file -A build.ts
+        run: DEBUG=true deno run --env-file -A ./ci/build.ts
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: x86_64-unknown-linux-gnu
+          path: build/monero-tui-x86_64-unknown-linux-gnu.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: x86_64-unknown-linux-gnu.AppImage
+          path: build/monero-tui-x86_64-unknown-linux-gnu.AppImage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aarch64-unknown-linux-gnu.AppImage
+          path: build/monero-tui-aarch64-unknown-linux-gnu.AppImage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aarch64-unknown-linux-gnu
+          path: build/monero-tui-aarch64-unknown-linux-gnu.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: x86_64-apple-darwin
+          path: build/monero-tui-x86_64-apple-darwin.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aarch64-apple-darwin
+          path: build/monero-tui-aarch64-apple-darwin.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: x86_64-pc-windows-msvc
+          path: build/monero-tui-x86_64-pc-windows-msvc.zip

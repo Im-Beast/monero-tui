@@ -2,8 +2,6 @@
 # BIN_NAME = monero-tui-x86_64-unknown-linux-gnu
 # ARCH = x86_64
 
-echo "Before:"
-tree
 pushd appimage
 wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage -O appimagetool.AppImage
 chmod +x appimagetool.AppImage
@@ -19,5 +17,3 @@ cp ../lib/* ./monero-tui.AppDir/usr/lib/
 ./appimagetool.AppImage -n ./monero-tui.AppDir ../bin/$BIN_NAME.AppImage
 chmod +x ../bin/$BIN_NAME.AppImage
 popd
-echo "After:"
-tree
