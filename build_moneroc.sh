@@ -1,5 +1,7 @@
-# https://github.com/MrCyjaneK/unnamed_monero_wallet/blob/c44dbaa25e25ed2bade8eb27ce6382f9e73dacfe/build_moneroc.sh
 #!/bin/bash
+
+# Slightly modified version of
+# https://github.com/MrCyjaneK/unnamed_monero_wallet/blob/c44dbaa25e25ed2bade8eb27ce6382f9e73dacfe/build_moneroc.sh
 
 # Script designed to build (or download) monero_c
 # usage:
@@ -87,7 +89,7 @@ fi
 if [[ ! "x$ARG_PREBUILD" == "x" ]];
 then
     # download prebuild
-    GH_JSON="$(curl --retry 12 --retry-all-errors -L -o- 'https://api.github.com/repos/MrCyjaneK/monero_c/releases/tags/'"${ARG_TAG}" | tr -d '\r')"
+    GH_JSON="$(curl --retry 12 -L -o- 'https://api.github.com/repos/MrCyjaneK/monero_c/releases/tags/'"${ARG_TAG}" | tr -d '\r')"
     for release_url in $(echo "$GH_JSON" | jq -r '.assets[].browser_download_url' | tr -d '\r' | xargs)
     do
         asset_basename=$(urldecode $(basename $release_url) | tr -d '\r' | xargs)
