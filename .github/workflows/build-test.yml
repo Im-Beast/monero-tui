@@ -2,7 +2,7 @@ name: Debug builds
 on: [push]
 jobs:
   aarch64:
-    runs-on: macos-14-xlarge
+    runs-on: buildjet-2vcpu-ubuntu-2204-arm
     steps:
       - uses: actions/checkout@v4
         with:
