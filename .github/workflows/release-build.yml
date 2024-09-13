@@ -16,6 +16,11 @@ jobs:
       - uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
+          
+      - name: Setup git credentials
+        run: |
+          git config --global user.email "franik.mateusz@gmail.com"
+          git config --global user.name "Im-Beast"
 
       - name: Install dependencies
         run: |
@@ -62,6 +67,11 @@ jobs:
       - uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
+
+      - name: Setup git credentials
+        run: |
+          git config --global user.email "franik.mateusz@gmail.com"
+          git config --global user.name "Im-Beast"
 
       - name: Install dependencies
         run: |
