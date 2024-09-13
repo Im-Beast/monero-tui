@@ -22,6 +22,17 @@ jobs:
           sudo apt update
           sudo apt install -y p7zip-full
 
+      - name: Ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: env-${{ github.job }}-${{ hashFiles('.env') }}
+      - name: Cache monero_c build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ matrix.coin }}/contrib/depends/built/*
+          key: env-${{ github.job }}-${{ hashFiles('.env') }}
+
       - name: Build
         run: ARCH=aarch64 deno run --env-file -A ./ci/build.ts
 
@@ -56,6 +67,17 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y p7zip-full
+
+      - name: Ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: env-${{ github.job }}-${{ hashFiles('.env') }}
+      - name: Cached monero_c
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ matrix.coin }}/contrib/depends/built/*
+          key: env-${{ github.job }}-${{ hashFiles('.env') }}
 
       - name: Build
         run: ARCH=x86_64 deno run --env-file -A ./ci/build.ts
