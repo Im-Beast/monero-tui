@@ -15,10 +15,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y tree p7zip-full
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+          sudo apt install -y tree p7zip-full qemu qemu-user-static binfmt-support
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - name: Build
         run: DEBUG=true deno run --env-file -A ./ci/build.ts
