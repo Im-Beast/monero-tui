@@ -61,9 +61,11 @@ for (const [arch, monerocTarget, denoTarget] of triplets) {
     await $.raw`docker run \
             -e ARCH=${arch}  \
             -e BIN_NAME=${binaryName} \
-            -v "$PWD":/source:rw \
+            -v "$PWD":"$PWD":rw \
+            -w "$PWD" \
             --platform "${platform}" \
-            imbeast/monero-tui-ci:latest`;
+            imbeast/monero-tui-ci:latest \
+            ci/build_appimage.sh`;
   }
 
   await $`7z a -tzip ./build/${binaryName}.zip -w bin/. lib`;
