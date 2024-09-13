@@ -1,5 +1,8 @@
 name: Debug builds
-on: [push]
+on:
+  push:
+    branches:
+      - "**"
 jobs:
   aarch64:
     runs-on: buildjet-2vcpu-ubuntu-2204-arm
