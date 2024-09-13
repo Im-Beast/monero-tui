@@ -16,6 +16,9 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y tree p7zip-full qemu qemu-user-static binfmt-support
+
+      - name: Setup QEMU
+        run: |
           docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - name: Build
