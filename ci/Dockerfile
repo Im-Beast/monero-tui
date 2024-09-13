@@ -10,5 +10,5 @@ ENV APPIMAGE_EXTRACT_AND_RUN=1
 RUN apt update && \
     apt install -y tree build-essential pkg-config autoconf libtool ccache make cmake \
     wget gcc g++ git curl lbzip2 libtinfo5 gperf unzip python-is-python3 \
-    p7zip-full fuse libfuse2 desktop-file-utils qemu qemu-user-static binfmt-support && \
+    p7zip-full fuse libfuse2 desktop-file-utils && \
     apt-get clean && rm -rf /var/lib/apt/lists/

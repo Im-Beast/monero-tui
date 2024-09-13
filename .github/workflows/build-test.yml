@@ -1,8 +1,8 @@
 name: Debug builds
 on: [push]
 jobs:
-  build-test:
-    runs-on: ubuntu-20.04
+  aarch64:
+    runs-on: macos-14-xlarge
     steps:
       - uses: actions/checkout@v4
         with:
@@ -15,14 +15,42 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y tree p7zip-full qemu qemu-user-static binfmt-support
-
-      - name: Setup QEMU
-        run: |
-          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+          sudo apt install -y p7zip-full
 
       - name: Build
-        run: DEBUG=true deno run --env-file -A ./ci/build.ts
+        run: ARCH=aarch64 DEBUG=true deno run --env-file -A ./ci/build.ts
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aarch64-unknown-linux-gnu.AppImage
+          path: build/monero-tui-aarch64-unknown-linux-gnu.AppImage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aarch64-unknown-linux-gnu
+          path: build/monero-tui-aarch64-unknown-linux-gnu.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aarch64-apple-darwin
+          path: build/monero-tui-aarch64-apple-darwin.zip
+
+  x86_64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y p7zip-full
+
+      - name: Build
+        run: ARCH=x86_64 DEBUG=true deno run --env-file -A ./ci/build.ts
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -35,20 +63,8 @@ jobs:
           path: build/monero-tui-x86_64-unknown-linux-gnu.AppImage
       - uses: actions/upload-artifact@v4
         with:
-          name: aarch64-unknown-linux-gnu.AppImage
-          path: build/monero-tui-aarch64-unknown-linux-gnu.AppImage
-      - uses: actions/upload-artifact@v4
-        with:
-          name: aarch64-unknown-linux-gnu
-          path: build/monero-tui-aarch64-unknown-linux-gnu.zip
-      - uses: actions/upload-artifact@v4
-        with:
           name: x86_64-apple-darwin
           path: build/monero-tui-x86_64-apple-darwin.zip
-      - uses: actions/upload-artifact@v4
-        with:
-          name: aarch64-apple-darwin
-          path: build/monero-tui-aarch64-apple-darwin.zip
       - uses: actions/upload-artifact@v4
         with:
           name: x86_64-pc-windows-msvc
