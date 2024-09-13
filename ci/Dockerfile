@@ -6,6 +6,9 @@ WORKDIR /source
 # Specify that its a noninteractive environment so all packages install smoothly
 ARG DEBIAN_FRONTEND=noninteractive
 
+# Make sure AppImages can build in the docker
+ENV APPIMAGE_EXTRACT_AND_RUN=1
+
 # Install dependencies
 RUN apt update
 RUN apt install -y tree build-essential pkg-config autoconf libtool ccache make cmake \

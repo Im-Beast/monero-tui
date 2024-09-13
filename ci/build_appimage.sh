@@ -3,13 +3,14 @@
 # ARCH = x86_64
 
 pushd appimage
-wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage -O appimagetool.AppImage
-chmod +x appimagetool.AppImage
 
 pushd monero-tui.AppDir
 mkdir -p ./usr/bin
 mkdir -p ./usr/lib
 popd
+
+wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage -O appimagetool.AppImage
+chmod +x appimagetool.AppImage
 
 cp ../bin/$BIN_NAME ./monero-tui.AppDir/usr/bin/monero-tui
 cp ../lib/* ./monero-tui.AppDir/usr/lib/

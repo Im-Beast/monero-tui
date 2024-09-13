@@ -58,11 +58,10 @@ for (const [arch, monerocTarget, denoTarget] of triplets) {
         break;
     }
 
-    await $.raw`echo "$PWD"`;
     await $.raw`docker run \
             -e ARCH=${arch}  \
             -e BIN_NAME=${binaryName} \
-            -v "$PWD":/source \
+            -v "$PWD":/source:rw \
             --platform "${platform}" \
             imbeast/monero-tui-ci:latest`;
   }
