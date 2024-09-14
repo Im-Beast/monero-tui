@@ -7,7 +7,7 @@ on:
       - "*"
 jobs:
   aarch64:
-    runs-on: buildjet-4vcpu-ubuntu-2204-arm
+    runs-on: buildjet-2vcpu-ubuntu-2204-arm
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,7 +39,10 @@ jobs:
           key: env-${{ github.job }}-${{ hashFiles('.env') }}
 
       - name: Build
-        run: ARCH=aarch64 deno run --env-file -A ./ci/build.ts
+        run: |
+          echo -n -e "#!/bin/sh\necho 1" > $(which nproc)
+          chmod +x $(which nproc)
+          ARCH=aarch64 deno run --env-file -A ./ci/build.ts
 
       - uses: actions/upload-artifact@v4
         with:
