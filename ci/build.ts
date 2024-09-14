@@ -20,17 +20,29 @@ const $ = build$({
     .stderr("inherit"),
 });
 
-const archTriplets = {
-  x86_64: [
-    ["x86_64-linux-gnu", "x86_64-unknown-linux-gnu"],
-    ["x86_64-apple-darwin11", "x86_64-apple-darwin"],
-    ["x86_64-w64-mingw32", "x86_64-pc-windows-msvc"],
-  ],
-  aarch64: [
-    ["aarch64-linux-gnu", "aarch64-unknown-linux-gnu"],
-    ["aarch64-apple-darwin11", "aarch64-apple-darwin"],
-  ],
+const allArchTriplets = {
+  debug: {
+    x86_64: [
+      ["x86_64-linux-gnu", "x86_64-unknown-linux-gnu"],
+      ["x86_64-apple-darwin11", "x86_64-apple-darwin"],
+      ["x86_64-w64-mingw32", "x86_64-pc-windows-msvc"],
+    ],
+    aarch64: [
+      ["aarch64-linux-gnu", "aarch64-unknown-linux-gnu"],
+      ["aarch64-apple-darwin11", "aarch64-apple-darwin"],
+    ],
+  },
+  release: {
+    x86_64: [
+      ["x86_64-linux-gnu", "x86_64-unknown-linux-gnu"],
+    ],
+    aarch64: [
+      ["aarch64-linux-gnu", "aarch64-unknown-linux-gnu"],
+    ],
+  },
 } as const;
+
+const archTriplets = allArchTriplets[DEBUG ? "debug" : "release"];
 
 if (!(ARCH in archTriplets)) {
   console.error(
