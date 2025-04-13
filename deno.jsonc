@@ -11,12 +11,12 @@
     "@tui/strings": "jsr:@tui/strings@^0",
     "@std/path": "jsr:@std/path@1.0.2",
     "@std/fs": "jsr:@std/fs@1.0.1",
-    "moneroc": "https://raw.githubusercontent.com/MrCyjaneK/monero_c/ts-bindings/impls/monero.ts/mod.ts",
+    "moneroc": "https://raw.githubusercontent.com/MrCyjaneK/monero_c/d47fb528282fd795ec33da79b5bd218840495629/impls/monero.ts/mod.ts",
     //
     "$utils/": "./src/utils/"
   },
   "tasks": {
-    "run": "deno run --unstable-ffi -A ./src/tui/mod.ts"
+    "run": "deno run --unstable-ffi -A ./src/mod.ts"
   },
   "fmt": {
     "lineWidth": 120

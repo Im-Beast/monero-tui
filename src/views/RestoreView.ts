@@ -1,42 +1,49 @@
+import { crayon } from "@crayon/crayon";
 import { HorizontalBlock, Style, VerticalBlock } from "@tui/nice";
 import { computed, signal } from "@tui/signals";
-import { crayon } from "@crayon/crayon";
 import { createTextBox } from "@tui/tui/components";
 
-import { Wallet } from "moneroc";
 import { getWalletPath } from "$utils/wallet.ts";
+import { Wallet } from "moneroc";
 
-import { ActionButton, ErrorText, Spinner, TextBox } from "../shared/components.ts";
-import { colors, separatedText, text } from "../shared/styles.ts";
 import { view, wallet, walletManager } from "../mod.ts";
+import {
+  ActionButton,
+  ErrorText,
+  Spinner,
+  TextBox,
+} from "../shared/components.ts";
+import { colors, separatedText, text } from "../shared/styles.ts";
 
-export const SeedTextBox = createTextBox((() => {
-  const base = new Style({
-    width: "100%",
-    height: 8,
-    string: crayon.bgHex(colors.backgroundHigher).hex(colors.text),
-    padding: { all: 1 },
-    border: {
-      all: crayon.hex(colors.text),
-      type: "rounded",
-    },
-    text: {
-      wrap: "wrap",
-      overflow: "ellipsis",
-    },
-  });
-  const hover = base.derive({
-    string: crayon.bgHex(colors.backgroundHighest).hex(colors.text),
-    border: { all: crayon.hex(colors.monero) },
-  });
-  const active = hover.derive({
-    border: { all: crayon.hex(colors.moneroDark) },
-  });
-  const cursor = new Style({
-    string: crayon.bgHex(colors.monero).hex(colors.text),
-  });
-  return { base, hover, active, cursor };
-})());
+export const SeedTextBox = createTextBox(
+  (() => {
+    const base = new Style({
+      width: "100%",
+      height: 8,
+      string: crayon.bgHex(colors.backgroundHigher).hex(colors.text),
+      padding: { all: 1 },
+      border: {
+        all: crayon.hex(colors.text),
+        type: "rounded",
+      },
+      text: {
+        wrap: "wrap",
+        overflow: "ellipsis",
+      },
+    });
+    const hover = base.derive({
+      string: crayon.bgHex(colors.backgroundHighest).hex(colors.text),
+      border: { all: crayon.hex(colors.monero) },
+    });
+    const active = hover.derive({
+      border: { all: crayon.hex(colors.moneroDark) },
+    });
+    const cursor = new Style({
+      string: crayon.bgHex(colors.monero).hex(colors.text),
+    });
+    return { base, hover, active, cursor };
+  })()
+);
 
 let walletName = "";
 let seed = "";
@@ -75,7 +82,7 @@ export function Restore() {
       TextBox("Password confirmation", {
         password: true,
         onChange: (v) => (passwordConfirmation = v),
-      }),
+      })
     ),
     computed(() => {
       const isLoading = loading.get();
@@ -116,7 +123,8 @@ export function Restore() {
             }
 
             const words = seed.split(" ");
-            const validSeed = words.length === 25 && words.every((word) => word.length);
+            const validSeed =
+              words.length === 25 && words.every((word) => word.length);
             if (!validSeed) {
               error.set("Seed is invalid");
               return;
@@ -131,7 +139,7 @@ export function Restore() {
                 await getWalletPath(),
                 password,
                 words.join(" "),
-                BigInt(height),
+                BigInt(height)
               );
               wallet.set(restoredWallet);
               view.set("home");
@@ -143,8 +151,8 @@ export function Restore() {
               }
             }
           },
-        }),
+        })
       );
-    }),
+    })
   );
 }
